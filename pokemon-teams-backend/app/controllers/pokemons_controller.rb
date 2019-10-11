@@ -3,6 +3,8 @@ class PokemonsController < ApplicationController
         params[:pokemon][:nickname] = Faker::Name.first_name
         params[:pokemon][:species] = Faker::Games::Pokemon.name
         @pokemon = Pokemon.create(pokemon_params)
+
+        render json:@pokemon, status: 201
     end
 
     private
