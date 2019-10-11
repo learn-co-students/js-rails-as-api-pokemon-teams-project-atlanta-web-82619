@@ -19,17 +19,36 @@ function addPokemon(t_id){
     fetch(POKEMONS_URL, config)
         .then(r => r.json())
         .then(pokemon => {
-            let li = document.createElement("li")
-            li.innerText = `${pokemon.nickname} (${pokemon.species})`
-            let pokeButton = document.createElement("button")
-            pokeButton.className = "release"
-            pokeButton.setAttribute("data-pokemon-id", pokemon.id)
-            pokeButton.innerText = "Release"
-            li.appendChild(pokeButton)
+            if(pokemon.status !== 500) {
+                console.log(pokemon)
+                let li = document.createElement("li")
+                li.innerText = `${pokemon.nickname} (${pokemon.species})`
+                let pokeButton = document.createElement("button")
+                pokeButton.className = "release"
+                pokeButton.setAttribute("data-pokemon-id", pokemon.id)
+                pokeButton.innerText = "Release"
+                li.appendChild(pokeButton)
 
-            let ul = document.querySelector(`button#trainer${t_id}`)
-            ul.appendChild(li)
-        })
+                let ul = document.querySelector(`button#trainer${t_id} + ul`)
+                ul.appendChild(li)
+            } else {
+                alert("You cannot have more than 6 pokemon")
+            }
+    })
+}
+
+function releasePokemon(p_id) {
+    config = {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": 'application/json',
+            'Accept': 'application/json'
+        },
+    }
+
+    fetch(`${POKEMONS_URL}/${p_id}`, config)
+
+    document.querySelector(`#pokemon${p_id}`).parentElement.remove()
 
 }
 
@@ -61,6 +80,7 @@ fetch(TRAINERS_URL).then(response => response.json()).then(trainers => {
             let pokeButton = document.createElement("button")
             pokeButton.className = "release"
             pokeButton.setAttribute("data-pokemon-id", pokemon.id)
+            pokeButton.setAttribute("id", `pokemon${pokeButton["attributes"]["data-pokemon-id"].value}`)
             pokeButton.innerText = "Release"
             li.appendChild(pokeButton)
             ul.appendChild(li)
@@ -73,6 +93,14 @@ fetch(TRAINERS_URL).then(response => response.json()).then(trainers => {
     addPokemonButtons.forEach(button => {
         button.addEventListener('click', e => {
             addPokemon(button["attributes"]["data-trainer-id"].value);
+        })
+    })
+
+    const releasePokemonButtons = document.querySelectorAll(".release")
+
+    releasePokemonButtons.forEach(button => {
+        button.addEventListener("click", (e) => {
+            releasePokemon(button["attributes"]["data-pokemon-id"].value);
         })
     })
 })
