@@ -22,7 +22,7 @@ trainers_name = [
   'Niky',
   'Ashley'
 ]
- 
+
 trainer_collection = []
  
 trainers_name.each do |name|
